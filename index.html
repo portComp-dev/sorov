@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>PortCompiler so‘rovnomasi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['Onest','system-ui','sans-serif']},colors:{forest:{800:'#06382c',900:'#04271f'}}}}}
+</script>
+<style>
+.opt{display:flex;gap:.7rem;align-items:flex-start;padding:.65rem .8rem;border:1px solid #d1fae5;border-radius:.7rem;margin-bottom:.5rem;cursor:pointer;background:#fff}
+.opt:hover{background:#ecfdf5}
+.opt:has(input:checked){border-color:#10b981;background:#ecfdf5}
+.opt input[type=radio],.opt input[type=checkbox]{margin-top:.28rem;width:1.1rem;height:1.1rem;accent-color:#059669;flex:none}
+.opt:has(input:focus-visible){outline:2px solid #059669;outline-offset:2px}
+.card.bad{border-left-color:#dc2626}
+.sc:has(input:checked){background:#10b981;border-color:#10b981;color:#052e16}
+.sc:has(input:focus-visible){outline:2px solid #059669;outline-offset:2px}
+</style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased">
+
+<header class="bg-forest-800 text-emerald-50">
+  <div class="max-w-2xl mx-auto px-4 py-7">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-emerald-500 text-forest-900 grid place-items-center font-extrabold" aria-hidden="true">PC</div>
+      <span class="text-2xl font-extrabold tracking-tight">PortCompiler</span>
+    </div>
+    <p class="mt-3 text-emerald-200/90 text-sm leading-relaxed">Iste’dodni imkoniyat bilan bog‘laymiz. Ish beruvchilar va ish izlovchilar o‘rtasidagi raqamli ko‘prik.</p>
+  </div>
+</header>
+
+<main class="max-w-2xl mx-auto px-4 py-8">
+  <div id="done" class="hidden border border-emerald-200 border-l-4 border-l-emerald-500 rounded-2xl p-6 bg-emerald-50">
+    <h2 class="text-2xl font-bold text-forest-800 mb-2">Ishtirokingiz uchun rahmat!</h2>
+    <p>Javoblaringiz PortCompiler’ni sizga qulay qilishga yordam beradi.</p>
+  </div>
+
+  <!-- Web3Forms: kalitni https://web3forms.com saytida oling va СИЗНИНГ_ACCESS_KEY_КАЛИТИНГИЗ o‘rniga qo‘ying -->
+  <form id="survey" action="https://api.web3forms.com/submit" method="POST" novalidate>
+    <input type="hidden" name="access_key" value="4bb34361-6a25-4651-9cd3-d2f111f6992d">
+    <input type="hidden" name="subject" value="PortCompiler so‘rovnomasi — yangi javob">
+    <input type="hidden" name="from_name" value="PortCompiler So‘rovnoma">
+    <input type="checkbox" name="botcheck" id="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <section class="mb-8">
+      <h1 class="text-2xl font-extrabold text-forest-800 mb-3">Salom! Qisqa so‘rovnoma</h1>
+      <p class="mb-2"><b>PortCompiler</b> — ish izlovchilar, ish beruvchilar va volontyorlarni bir joyda birlashtiradigan sayt. Javoblaringiz uni sizga qulay qilishga yordam beradi.</p>
+      <p class="text-slate-500 text-sm">So‘rovnoma to‘liq anonim: ism, telefon yoki pochta so‘ralmaydi, kirish (login) ham talab qilinmaydi. Atigi 1–2 daqiqa.</p>
+    </section>
+
+    <div id="seg" class="card bg-white border border-emerald-100 border-l-4 border-l-emerald-500 rounded-2xl p-5 mb-5">
+      <p class="font-semibold mb-3">Siz kimsiz?</p>
+      <label class="opt"><input type="radio" name="segment" value="seek"><span>Ish izlovchi yoki volontyorman</span></label>
+      <label class="opt"><input type="radio" name="segment" value="hire"><span>Ish beruvchi yoki loyiha tashkilotchisiman</span></label>
+      <p class="err hidden text-sm text-red-600 mt-1">Davom etish uchun variantni tanlang.</p>
+    </div>
+
+    <div id="qs"></div>
+
+    <p id="sErr" class="hidden text-sm text-red-600 mb-3" role="alert"></p>
+    <button id="send" type="submit" class="hidden w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-forest-900 font-bold px-8 py-3 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:opacity-60">Yuborish</button>
+  </form>
+</main>
+
+<footer class="bg-forest-900 text-emerald-200/80 text-sm mt-10">
+  <div class="max-w-2xl mx-auto px-4 py-5">© 2026 PortCompiler</div>
+</footer>
+
+<script>
+const GROUPS={
+seek:{title:'I. Ish izlovchilar va volontyorlar uchun savollar',qs:[
+{n:'problem',t:'Siz hozirda qanday muammoga duch kelyapsiz yoki oldin duch kelganmisiz?',k:'single',o:['Yaxshi ish yoki stajirovka topishda qiynalaman','Foydali volontyorlik imkoniyatlarini topish qiyin','Tajriba talab qilishgani uchun qayerga borishni bilmayman','Hech qanday muammoga duch kelmaganman, hammasi oson']},
+{n:'barrier',t:'Ish yoki volontyorlik qidirganda eng asosiy to‘siq nima?',k:'single',o:['E’lonlar juda tarqoq (har xil kanal va saytlarda sochilgan)','Talab qilinadigan talablar juda yuqori yoki tushunarsiz','O‘z portfolioimni va ko‘nikmalarimni ko‘rsatadigan qulay joy yo‘q','Vaqtim kam, hammasini tekshirib chiqishga ulgurmayman']},
+{n:'cv_opinion',t:'Standart rezyume (CV) sizning haqiqiy salohiyatingizni to‘liq ko‘rsatib bera oladi deb o‘ylaysizmi?',k:'single',o:['Yo‘q, u faqat qog‘oz va menda amaliy loyihalar ko‘proq','Qisman ko‘rsatadi, lekin loyihalar yaxshiroq ko‘rinishi kerak','Ha, standart rezyume men uchun yetarli','Bilmayman / O‘ylab ko‘rmaganman']},
+{n:'portfolio_help',t:'Agar barcha loyihalaringiz, sertifikatlaringiz va ko‘nikmalaringiz bitta chiroyli raqamli portfolioda jamlansa, ish yoki volontyorlik topishingiz osonroq bo‘larmidi?',k:'single',o:['Ha, juda katta yordam bergan bo‘lardi','Balki, foydasi tegar deb o‘ylayman','Farqi yo‘q, baribir rezyume yetarli','Kerak emas']},
+{n:'volunteering_value',t:'Yangi boshlayotgan mutaxassis yoki talaba uchun pulsiz bo‘lsa ham volontyorlik qilib tajriba to‘plash qanchalik muhim?',k:'single',o:['Juda muhim, chunki amaliy tajriba yetishmaydi','Foydali, lekin baribir pul ham to‘lashlari kerak','Vaqtni bekor ketkazish deb o‘ylayman','Qiziqtirmaydi']},
+{n:'evaluation_method',t:'Ish beruvchilar yoki loyiha rahbarlari sizni baholashi uchun eng qulay usul qaysi deb o‘ylaysiz?',k:'single',o:['Qilgan real ishlarim va loyihalarim portfoliosi orqali','Qisqa va lo‘nda suhbat (intervyu) davomida','Standart test yoki sinov topshirig‘i orqali','Birinchi kunlardagi amaliy ishim orqali']},
+{n:'difficulty_rating',t:'Hozirda o‘zingizga mos ish yoki volontyorlik loyihasini topish qiyinligini 1 dan 5 gacha bo‘lgan shkala bo‘yicha qanday baholaysiz?',k:'scale',lo:'1 — juda oson, hech qanday muammo yo‘q',hi:'5 — juda qiyin, topib bo‘lmayapti'}]},
+hire:{title:'II. Ish beruvchilar va loyiha tashkilotchilari uchun savollar',qs:[
+{n:'hiring_problem',t:'Siz hozirda jamoangizga xodim yoki volontyor izlaganda qanday muammoga duch kelyapsiz?',k:'single',o:['Malakali va mos xodim topish juda qiyin','Kelib tushgan arizalar ko‘p, lekin ularning orasidan saralash vaqt oladi','Nomzodlarning real ko‘nikmalarini oldindan baholash qiyin','Hech qanday muammoga duch kelmaganmiz, oson topamiz']},
+{n:'cv_issue',t:'Nomzodlarning rezyumesini (CV) ko‘rib chiqqanda eng ko‘p nimadan qiynalasiz?',k:'single',o:['Hammasi bir xil shablonda va jonsiz yozilgan bo‘ladi','Ularning chindan qanday amaliy ish qilganini ko‘rib bo‘lmaydi','Ma’lumotlar juda ko‘p va keraksizlari ham ko‘p','Aloqaga chiqsak, ma’lumotlar to‘g‘ri kelmay chiqadi']},
+{n:'selection_focus',t:'Nomzod yoki volontyorni tanlashda ularning qaysi jihatiga birinchi navbatda e’tibor berasiz?',k:'single',o:['Tayyor loyihalari va amaliy portfoliosiga','Olgan ta’limi va yozgan rezyumesiga','Suhbatdagi o‘zini tutishi va muloqot mahoratiga','Tanishlarining tavsiyasiga']},
+{n:'database_use',t:'Agar sizda barcha soha mutaxassislarining tayyor portfoliolari, ko‘nikmalari va bajargan ishlari jamlangan yagona baza bo‘lsa, undan foydalangan bo‘larmidingiz?',k:'single',o:['Ha, albatta! Bu xodim izlashga ketgan vaqtni bir necha baravar qisqartirar edi','Balki, agar qulay va bepul/arzon bo‘lsa','Yo‘q, o‘zimizning eski usullar qulayroq','Bilmayman']},
+{n:'volunteers_importance',t:'Kompaniyangizga yoki loyihangizga yosh volontyorlarni jalb qilish siz uchun qanchalik muhim?',k:'single',o:['Juda muhim, ular yangi g‘oyalar beradi va o‘zimiz ham ularga o‘rgatamiz','Ba’zida kerak bo‘lib qoladi (alohida kichik vazifalar uchun)','Yo‘q, bizga faqat tayyor va tajribali kadrlar kerak','Hali bu haqda o‘ylab ko‘rmaganmiz']},
+{n:'search_time',t:'Internetdan kerakli odamni topish uchun o‘rtacha qancha vaqt sarflaysiz?',k:'single',o:['Bir necha soat ichida topa olamiz','Bir necha kun yoki haftalab vaqt ketadi','Haftalab va oylab izlashga to‘g‘ri keladi','Doimiy ravishda odam qidirish bilan bandmiz']},
+{n:'hiring_rating',t:'O‘z jamoangiz uchun munosib va malakali kadr/volontyor topish muammosini 1 dan 5 gacha bo‘lgan shkala bo‘yicha qanday baholaysiz?',k:'scale',lo:'1 — hech qanday muammo yo‘q, darrov topamiz',hi:'5 — juda katta muammo, munosib odam topib bo‘lmayapti'}]}
+};
+const SEGNAME={seek:'Ish izlovchi / volontyor',hire:'Ish beruvchi / loyiha tashkilotchisi'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Har bir guruh o‘z bloki ichida; yashirin blokdagi maydonlar o‘chiriladi (disabled)
+$('#qs').innerHTML=Object.entries(GROUPS).map(([g,G])=>`
+<div class="grp hidden" data-g="${g}"><h2 class="text-xl font-bold text-forest-800 mb-4">${G.title}</h2>
+${G.qs.map((q,i)=>{
+  const t=q.k==='multi'?'checkbox':'radio', name=q.n;
+  return `<div class="card bg-white border border-emerald-100 border-l-4 border-l-emerald-500 rounded-2xl p-5 mb-4" data-q="${name}">
+  <p class="font-semibold mb-3">${i+1}. ${esc(q.t)}</p>
+  ${q.k==='scale'?scaleHtml(name,q):''}${(q.o||[]).map(o=>`<label class="opt"><input type="${t}" name="${name}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}
+  ${q.other?`<label class="opt"><input type="${t}" name="${name}" value="__other"><span class="flex-1">Boshqa:<input type="text" data-other="${name}" name="${name}_other" placeholder="O‘z javobingiz" class="mt-1 w-full border border-emerald-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"></span></label>`:''}
+  <p class="err hidden text-sm text-red-600 mt-1">Davom etish uchun javobni tanlang.</p></div>`}).join('')}</div>`).join('');
+
+const scaleHtml=(name,q)=>`<div class="flex gap-2">${[1,2,3,4,5].map(n=>`<label class="sc flex-1 text-center border border-emerald-200 rounded-xl py-3 font-bold cursor-pointer hover:bg-emerald-50"><input type="radio" name="${name}" value="${n}" class="sr-only">${n}</label>`).join('')}</div><div class="flex justify-between gap-4 text-xs text-slate-500 mt-2"><span>${esc(q.lo)}</span><span class="text-right">${esc(q.hi)}</span></div>`;
+let seg=null;
+function show(g){
+  seg=g;
+  document.querySelectorAll('.grp').forEach(el=>{
+    const on=el.dataset.g===g;
+    el.classList.toggle('hidden',!on);
+    el.querySelectorAll('input').forEach(i=>i.disabled=!on);
+  });
+  $('#send').classList.remove('hidden');
+}
+document.querySelectorAll('input[name="segment"]').forEach(r=>r.addEventListener('change',e=>{
+  $('#seg').classList.remove('bad');$('#seg .err').classList.add('hidden');show(e.target.value);
+}));
+document.querySelectorAll('.grp input').forEach(i=>i.disabled=true);
+
+function answerOf(card,q){
+  const checked=[...card.querySelectorAll('input[type=radio]:checked,input[type=checkbox]:checked')];
+  const other=card.querySelector('[data-other]');
+  const vals=checked.map(c=>c.value==='__other'?('Boshqa: '+(other?other.value.trim():'')):c.value);
+  if(other&&other.value.trim()&&!checked.some(c=>c.value==='__other')){
+    const r=card.querySelector('input[value="__other"]');r.checked=true;vals.push('Boshqa: '+other.value.trim());
+  }
+  return vals;
+}
+
+$('#survey').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const er=$('#sErr');er.classList.add('hidden');
+  if(!seg){$('#seg').classList.add('bad');$('#seg .err').classList.remove('hidden');$('#seg').scrollIntoView({behavior:'smooth',block:'center'});return}
+  const G=GROUPS[seg];let ok=true,first=null;const out=[];
+  G.qs.forEach((q,i)=>{
+    const card=document.querySelector(`[data-q="${q.n}"]`);
+    const v=answerOf(card,q);
+    const bad=!v.length||v.some(x=>x==='Boshqa: ');
+    card.classList.toggle('bad',bad);card.querySelector('.err').classList.toggle('hidden',!bad);
+    if(bad){ok=false;first=first||card}
+    out.push([q.n,v.join('; '),`${i+1}. ${q.t}`]);
+  });
+  if(!ok){first.scrollIntoView({behavior:'smooth',block:'center'});return}
+
+  const key=e.target.access_key.value;
+  if(!key||key==='СИЗНИНГ_ACCESS_KEY_КАЛИТИНГИЗ'){er.textContent='Sayt egasi uchun: faylda СИЗНИНГ_ACCESS_KEY_КАЛИТИНГИЗ o‘rniga Web3Forms kalitini qo‘ying.';er.classList.remove('hidden');return}
+
+  const fd=new FormData();
+  fd.append('access_key',key);
+  fd.append('subject',e.target.subject.value);
+  fd.append('from_name',e.target.from_name.value);
+  if($('#botcheck').checked)fd.append('botcheck','on');
+  fd.append('respondent_type',SEGNAME[seg]);
+  out.forEach(([k,v])=>fd.append(k,v));
+  fd.append('savollar_matni',out.map(([k,,t])=>k+' = '+t).join('\n'));
+
+  const btn=$('#send');btn.disabled=true;btn.textContent='Yuborilmoqda…';
+  try{
+    const res=await fetch(e.target.action,{method:'POST',body:fd,headers:{Accept:'application/json'}});
+    const data=await res.json();
+    if(res.ok&&data.success){e.target.classList.add('hidden');$('#done').classList.remove('hidden');scrollTo({top:0,behavior:'smooth'})}
+    else throw new Error(data.message||'error');
+  }catch(err){
+    er.textContent='Javoblarni yuborib bo‘lmadi. Internetni tekshirib, tugmani yana bosing.';er.classList.remove('hidden');
+    btn.disabled=false;btn.textContent='Yuborish';
+  }
+});
+</script>
+</body>
+</html>
